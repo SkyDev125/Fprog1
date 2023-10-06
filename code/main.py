@@ -30,11 +30,9 @@ def eh_territorio(territorio):
 
     return True
 
-
 # Return a valid last interception (top right) based on the territory
 def obtem_ultima_intersecao(territorio):
     return (chr(64 + len(territorio)), len(territorio[0]))
-
 
 # Verify if the interception is valid
 def eh_intersecao(intersecao):
@@ -67,7 +65,6 @@ def eh_intersecao(intersecao):
 
     return True
 
-
 # Verify if the interception is in the territory
 def eh_intersecao_valida(territorio, intersecao):
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
@@ -82,19 +79,17 @@ def eh_intersecao_valida(territorio, intersecao):
 
     return True
 
-
 # Return the chain of the interception
 def convert_intersecao(intersecao):
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
-
 
 # Verify if the interception is free
 def eh_intersecao_livre(territorio, intersecao):
     collumn, line = convert_intersecao(intersecao)
     return territorio[collumn][line] == 0
 
-
+# Return the adjacent interceptions
 def obtem_intersecoes_adjacentes(territorio, intersecao):
     collumn, line = convert_intersecao(intersecao)
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
@@ -118,24 +113,30 @@ def obtem_intersecoes_adjacentes(territorio, intersecao):
 
     return inter_adjs
 
+# Order the Intersections by left to right, bottom to top
 def ordena_intersecoes(intersecoes):
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
 
+# Return the territory as a string
 def territorio_para_str(territorio):
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
-    # Create the string with the collumns
+
+    # Create a Letters line
     s = ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)] + ["\n"]
 
+
+    # Create the lines (number, values, number)
     for x in range(max_lines, 0, -1):
-        s += [' ' + str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + [' ' + str(x) + '\n']
+        if x > 9:
+            s += [str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + [' ' + str(x) + '\n']
+        else:
+            s += [' ' + str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + ['  ' + str(x) + '\n']
 
-    s += ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)] + ["\n"]
+    # Create a Letters line
+    s += ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)]
 
+    # Join the strings
     s = ''.join(s)
 
     return s
-
-print(territorio_para_str(((0, 1, 0, 0), (0, 0, 0, 0))))
-
-
