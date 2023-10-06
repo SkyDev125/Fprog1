@@ -79,7 +79,7 @@ def eh_intersecao_valida(territorio, intersecao):
 
     return True
 
-# Return the chain of the interception
+# Return the interseption in usable values for coding (1 -> 0) (A -> 0)
 def convert_intersecao(intersecao):
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
