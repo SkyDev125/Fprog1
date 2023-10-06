@@ -121,7 +121,7 @@ def obtem_intersecoes_adjacentes(territorio, intersecao):
 def ordena_intersecoes(intersecoes):
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
-
+dasd
 def territorio_para_str(territorio):
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     # Create the string with the collumns
