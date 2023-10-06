@@ -122,3 +122,20 @@ def ordena_intersecoes(intersecoes):
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
 
+def territorio_para_str(territorio):
+    max_collumns, max_lines = obtem_ultima_intersecao(territorio)
+    # Create the string with the collumns
+    s = ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)] + ["\n"]
+
+    for x in range(max_lines, 0, -1):
+        s += [' ' + str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + [' ' + str(x) + '\n']
+
+    s += ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)] + ["\n"]
+
+    s = ''.join(s)
+
+    return s
+
+print(territorio_para_str(((0, 1, 0, 0), (0, 0, 0, 0))))
+
+
