@@ -117,3 +117,8 @@ def obtem_intersecoes_adjacentes(territorio, intersecao):
         inter_adjs += ((chr(collumn + 64 + 1), line + 2),)
 
     return inter_adjs
+
+def ordena_intersecoes(intersecoes):
+    # sort based on the number(line), then based on the letter(collumn)
+    return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
+
