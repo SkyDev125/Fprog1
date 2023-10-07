@@ -136,7 +136,7 @@ def territorio_para_str(territorio):
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
 
     max_collumns = ord(max_collumns) - 64
-    # Create a Letters line
+    # Add a Letters line
     s = ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)] + ["\n"]
 
     # Create the lines (number, values, number)
@@ -153,7 +153,7 @@ def territorio_para_str(territorio):
         else:
             s += [" " + str(x)] + string_terrain + ["  " + str(x) + "\n"]
 
-    # Create a Letters line
+    # Add a Letters line
     s += ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)]
 
     # Join the string
@@ -246,6 +246,24 @@ def verifica_conexao(territorio, intersecao1, intersecao2):
     )
 
 
+# Return a tuple of interceptions that are occupied
+def get_occupied_intercesao(territorio):
+    # Create a list of interceptions
+    occupied = ()
+
+    # Check all the interceptions
+    for collumn in range(len(territorio)):
+        for cell in range(len(territorio[collumn])):
+            # Convert to intercesao (0 -> A) (0 -> 1)
+            intercesao = (chr(65 + collumn), 1 + cell)
+
+            # Check if the intercesao is free
+            if not eh_intersecao_livre(territorio, intercesao):
+                occupied += (intercesao,)
+
+    return ordena_intersecoes(occupied)
+
+
 # Return the number of occupied interceptions
 def calcula_numero_montanhas(territorio):
     # Check if territorio is valid
@@ -268,31 +286,35 @@ def calcula_numero_cadeias_montanhas(territorio):
     if not eh_territorio(territorio):
         raise ValueError("calcula_numero_cadeias_montanhas: argumento invalido")
 
-    # Check all the interceptions
-    count = 0
+    # Get the occupied interceptions
+    occupied = get_occupied_intercesao(territorio)
     visited = ()
-    for collumn in range(len(territorio)):
-        for cell in range(len(territorio[collumn])):
-            # Convert to intercesao (0 -> A) (0 -> 1)
-            intercesao = (chr(65 + collumn), 1 + cell)
-
-            # Check if the intercesao is free
-            if eh_intersecao_livre(territorio, intercesao):
-                visited += obtem_cadeia(territorio, intercesao)
-                continue
-
-            # Check if the intercesao is has been checked already
-            if intercesao not in visited:
-                visited += obtem_cadeia(territorio, intercesao)
-                count += 1
+    count = 0
+    for occupied_intercesao in occupied:
+        # Check if the intercesao is has been checked already
+        if occupied_intercesao not in visited:
+            visited += obtem_cadeia(territorio, occupied_intercesao)
+            count += 1
 
     return count
 
 
 # Return the number of valeys
 def calcula_tamanho_vales(territorio):
-    pass
+    # Check if territorio is valid
+    if not eh_territorio(territorio):
+        raise ValueError("calcula_tamanho_vales: argumento invalido")
 
+    # Get the occupied interceptions
+    occupied = get_occupied_intercesao(territorio)
+    visited = ()
+    valeys = ()
+    # Get the valeys
+    for occupied_intercesao in occupied:
+        # Check if the intercesao is has been checked already
+        if occupied_intercesao not in visited:
+            visited += obtem_cadeia(territorio, occupied_intercesao)
+            valeys += obtem_vale(territorio, occupied_intercesao)
 
-t = ((1, 1, 1, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 0), (0, 0, 0, 0))
-print(calcula_numero_cadeias_montanhas(t))
+    # Clean duplicates
+    return len(set(valeys))
