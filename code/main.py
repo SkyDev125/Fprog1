@@ -133,9 +133,10 @@ def territorio_para_str(territorio):
     if not eh_territorio(territorio):
         raise ValueError("territorio_para_str: argumento invalido")
 
+    # Get the maximum collumns and lines
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
-
     max_collumns = ord(max_collumns) - 64
+
     # Add a Letters line
     s = ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)] + ["\n"]
 
@@ -173,7 +174,7 @@ def obtem_cadeia(territorio, intersecao):
     # Check if intersecao is free
     freedom = eh_intersecao_livre(territorio, intersecao)
 
-    # Create recursive function to check if the adjacent interceptions are also free
+    # Create recursive function to check if the adjacent interceptions are also the same as freedom
     def recursive_check(territorio, intersecao, visited=()):
         # Add the intersecao to the list
         chain = (intersecao,)
@@ -291,7 +292,7 @@ def calcula_numero_cadeias_montanhas(territorio):
     visited = ()
     count = 0
     for occupied_intercesao in occupied:
-        # Check if the intercesao is has been checked already
+        # Verify if the intercesao has been checked already
         if occupied_intercesao not in visited:
             visited += obtem_cadeia(territorio, occupied_intercesao)
             count += 1
@@ -311,7 +312,7 @@ def calcula_tamanho_vales(territorio):
     valeys = ()
     # Get the valeys
     for occupied_intercesao in occupied:
-        # Check if the intercesao is has been checked already
+        # Verify if the intercesao has been checked already
         if occupied_intercesao not in visited:
             visited += obtem_cadeia(territorio, occupied_intercesao)
             valeys += obtem_vale(territorio, occupied_intercesao)
