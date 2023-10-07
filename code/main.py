@@ -30,9 +30,11 @@ def eh_territorio(territorio):
 
     return True
 
+
 # Return a valid last interception (top right) based on the territory
 def obtem_ultima_intersecao(territorio):
     return (chr(64 + len(territorio)), len(territorio[0]))
+
 
 # Verify if the interception is valid
 def eh_intersecao(intersecao):
@@ -65,29 +67,34 @@ def eh_intersecao(intersecao):
 
     return True
 
+
 # Verify if the interception is in the territory
 def eh_intersecao_valida(territorio, intersecao):
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     collumn, line = intersecao
 
-    # Check if the collumn
+    # Check if the collumn is larger than the maximum allowed for collumns
     if collumn > max_collumns:
         return False
 
+    # Check if the line is larger than the maximum allowed for lines
     if line > max_lines:
         return False
 
     return True
+
 
 # Return the interseption in usable values for coding (1 -> 0) (A -> 0)
 def convert_intersecao(intersecao):
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
 
+
 # Verify if the interception is free
 def eh_intersecao_livre(territorio, intersecao):
     collumn, line = convert_intersecao(intersecao)
     return territorio[collumn][line] == 0
+
 
 # Return the adjacent interceptions
 def obtem_intersecoes_adjacentes(territorio, intersecao):
@@ -113,30 +120,91 @@ def obtem_intersecoes_adjacentes(territorio, intersecao):
 
     return inter_adjs
 
+
 # Order the Intersections by left to right, bottom to top
 def ordena_intersecoes(intersecoes):
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
 
+
 # Return the territory as a string
 def territorio_para_str(territorio):
+    # Check if territory is valid
+    if not eh_territorio(territorio):
+        raise ValueError("territorio_para_str: argumento invalido")
+
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
 
     # Create a Letters line
-    s = ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)] + ["\n"]
-
+    s = (
+        ["  "]
+        + [" " + chr(64 + x) for x in range(1, ord(max_collumns) - 64 + 1)]
+        + ["\n"]
+    )
 
     # Create the lines (number, values, number)
     for x in range(max_lines, 0, -1):
         if x > 9:
-            s += [str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + [' ' + str(x) + '\n']
+            s += (
+                [str(x)]
+                + [
+                    " " + ("X" if territorio[y][x - 1] == 1 else ".")
+                    for y in range(ord(max_collumns) - 64)
+                ]
+                + [" " + str(x) + "\n"]
+            )
         else:
-            s += [' ' + str(x)] + [' ' + ('X' if territorio[y][x - 1] == 1 else ".") for y in range(ord(max_collumns) - 64)] + ['  ' + str(x) + '\n']
+            s += (
+                [" " + str(x)]
+                + [
+                    " " + ("X" if territorio[y][x - 1] == 1 else ".")
+                    for y in range(ord(max_collumns) - 64)
+                ]
+                + ["  " + str(x) + "\n"]
+            )
 
     # Create a Letters line
-    s += ['  '] + [' ' + chr(64+x) for x in range(1,ord(max_collumns)-64+1)]
+    s += ["  "] + [" " + chr(64 + x) for x in range(1, ord(max_collumns) - 64 + 1)]
 
     # Join the strings
-    s = ''.join(s)
+    s = "".join(s)
 
     return s
+
+
+# Return the chain of interceptions
+def obtem_cadeia(territorio, intersecao):
+    # Check if territorio is valid
+    if not eh_territorio(territorio) or not eh_intersecao(intersecao):
+        raise ValueError("obtem_cadeia: argumentos invalidos")
+
+    # Check if intersecao is valid (TODO: Check with teacher)
+    if not eh_intersecao_valida(territorio, intersecao):
+        raise ValueError("obtem_cadeia: argumentos invalidos")
+
+    # Check if intersecao is free
+    freedom = eh_intersecao_livre(territorio, intersecao)
+
+    # Create recursive function to check if the adjacent interceptions are also free
+    def recursive_check(territorio, intersecao, visited=()):
+        # Add the intersecao to the list
+        tups = (intersecao,)
+        visited += tups
+
+        # Check if the adjacent interceptions are equal to the freedom
+        for inter in obtem_intersecoes_adjacentes(territorio, intersecao):
+            if (
+                eh_intersecao_livre(territorio, inter) == freedom
+                and inter not in visited
+            ):
+                tups += recursive_check(territorio, inter, visited)
+
+        return tups
+
+    # Get the list of interceptions
+    tups = recursive_check(territorio, intersecao)
+
+    # Clean duplicates
+    tups = tuple(set(tups))
+
+    return ordena_intersecoes(tups)
