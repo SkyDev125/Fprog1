@@ -1,5 +1,15 @@
 # Verify if the territory is valid
-def eh_territorio(territorio):
+def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
+    """
+    Check if the given territory is valid.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    bool: True if the territory is valid, False otherwise.
+    """
     # Check if the territorio is a tuple
     if not isinstance(territorio, tuple):
         return False
@@ -32,12 +42,31 @@ def eh_territorio(territorio):
 
 
 # Return a valid last interception (top right) based on the territory
-def obtem_ultima_intersecao(territorio):
+def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
+    """
+    Returns the coordinates of the last interception (top right) based on the given territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - a tuple of two integers representing the coordinates of the last interception (top right) of the territory
+    """
     return (chr(64 + len(territorio)), len(territorio[0]))
 
 
 # Verify if the interception is valid
-def eh_intersecao(intersecao):
+def eh_intersecao(intersecao: tuple[str, int]) -> bool:
+    """
+    Verify if the given intersection is valid.
+
+    Parameters:
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    bool: True if the intersection is valid, False otherwise.
+    """
     # Check if the intersecao is a tuple
     if not isinstance(intersecao, tuple):
         return False
@@ -69,7 +98,20 @@ def eh_intersecao(intersecao):
 
 
 # Verify if the interception is in the territory
-def eh_intersecao_valida(territorio, intersecao):
+def eh_intersecao_valida(
+    territorio: tuple[tuple[int]], intersecao: tuple[str, int]
+) -> bool:
+    """
+    Verify if the given intersection is within the territory.
+
+    Args:
+        - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+        intersecao (tuple): A tuple representing the intersection to be verified.
+
+    Returns:
+        bool: True if the intersection is within the territory, False otherwise.
+    """
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     collumn, line = intersecao
 
@@ -85,19 +127,23 @@ def eh_intersecao_valida(territorio, intersecao):
 
 
 # Return the interseption in usable values for coding (A -> 0) (1 -> 0)
-def convert_intersecao(intersecao):
+def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
 
 
 # Verify if the interception is free
-def eh_intersecao_livre(territorio, intersecao):
+def eh_intersecao_livre(
+    territorio: tuple[tuple[int]], intersecao: tuple[str, int]
+) -> bool:
     collumn, line = convert_intersecao(intersecao)
     return territorio[collumn][line] == 0
 
 
 # Return the adjacent interceptions
-def obtem_intersecoes_adjacentes(territorio, intersecao):
+def obtem_intersecoes_adjacentes(
+    territorio: tuple[tuple[int]], intersecao: tuple[str, int]
+) -> tuple:
     collumn, line = convert_intersecao(intersecao)
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     inter_adjs = ()
@@ -122,13 +168,13 @@ def obtem_intersecoes_adjacentes(territorio, intersecao):
 
 
 # Order the Intersections by left to right, bottom to top
-def ordena_intersecoes(intersecoes):
+def ordena_intersecoes(intersecoes: tuple[tuple[str, int]]) -> tuple[tuple[str, int]]:
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
 
 
 # Return the territory as a string
-def territorio_para_str(territorio):
+def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
     # Check if territory is valid
     if not eh_territorio(territorio):
         raise ValueError("territorio_para_str: argumento invalido")
@@ -162,7 +208,9 @@ def territorio_para_str(territorio):
 
 
 # Return the chain of interceptions
-def obtem_cadeia(territorio, intersecao):
+def obtem_cadeia(
+    territorio: tuple[tuple[int]], intersecao: tuple[str, int]
+) -> tuple[tuple[str, int]]:
     # Check if territorio and intersection are valid
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_cadeia: argumentos invalidos")
@@ -173,9 +221,10 @@ def obtem_cadeia(territorio, intersecao):
 
     # Check if intersecao is free
     freedom = eh_intersecao_livre(territorio, intersecao)
+    visited = []
 
     # Create recursive function to check if the adjacent interceptions are also the same as freedom
-    def recursive_check(territorio, intersecao, visited=()):
+    def recursive_check(territorio, intersecao, visited):
         # Add the intersecao to the list
         chain = (intersecao,)
         visited += chain
@@ -183,24 +232,26 @@ def obtem_cadeia(territorio, intersecao):
         # Check if the adjacent interceptions are equal to the freedom
         for inter in obtem_intersecoes_adjacentes(territorio, intersecao):
             if (
-                eh_intersecao_livre(territorio, inter) == freedom
-                and inter not in visited
+                inter not in visited
+                and eh_intersecao_livre(territorio, inter) == freedom
             ):
                 chain += recursive_check(territorio, inter, visited)
 
         return chain
 
     # Get the list of interceptions
-    chain = recursive_check(territorio, intersecao)
+    chain = recursive_check(territorio, intersecao, visited)
 
     # Clean duplicates
-    chain = tuple(set(chain))
+    chain = tuple(chain)
 
     return ordena_intersecoes(chain)
 
 
 # Return the valleys around a mountain
-def obtem_vale(territorio, intersecao):
+def obtem_vale(
+    territorio: tuple[tuple[int]], intersecao: tuple[str, int]
+) -> tuple[tuple[str, int]]:
     # Check if territorio and intercesao are valid
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_vale: argumentos invalidos")
@@ -227,7 +278,11 @@ def obtem_vale(territorio, intersecao):
 
 
 # Verify if the interceptions are connected (mountain->mountain or free->free)
-def verifica_conexao(territorio, intersecao1, intersecao2):
+def verifica_conexao(
+    territorio: tuple[tuple[int]],
+    intersecao1: tuple[str, int],
+    intersecao2: tuple[str, int],
+) -> bool:
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("verifica_conexao: argumentos invalidos")
@@ -248,7 +303,7 @@ def verifica_conexao(territorio, intersecao1, intersecao2):
 
 
 # Return a tuple of interceptions that are occupied
-def get_occupied_intercesao(territorio):
+def get_occupied_intercesao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
     # Create a list of interceptions
     occupied = ()
 
@@ -266,7 +321,7 @@ def get_occupied_intercesao(territorio):
 
 
 # Return the number of occupied interceptions
-def calcula_numero_montanhas(territorio):
+def calcula_numero_montanhas(territorio: tuple[tuple[int]]) -> int:
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_numero_montanhas: argumento invalido")
@@ -282,7 +337,7 @@ def calcula_numero_montanhas(territorio):
 
 
 # Return the number of mountain chains
-def calcula_numero_cadeias_montanhas(territorio):
+def calcula_numero_cadeias_montanhas(territori: tuple[tuple[int]]) -> int:
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_numero_cadeias_montanhas: argumento invalido")
@@ -301,7 +356,7 @@ def calcula_numero_cadeias_montanhas(territorio):
 
 
 # Return the number of valeys
-def calcula_tamanho_vales(territorio):
+def calcula_tamanho_vales(territorio: tuple[tuple[int]]) -> int:
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_tamanho_vales: argumento invalido")
