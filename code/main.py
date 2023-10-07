@@ -178,6 +178,10 @@ def obtem_cadeia(territorio, intersecao):
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_cadeia: argumentos invalidos")
 
+    # Check if intersecao is part of territorio
+    if not eh_intersecao_valida(territorio, intersecao):
+        raise ValueError("obtem_cadeia: argumentos invalidos")
+
     # Check if intersecao is free
     freedom = eh_intersecao_livre(territorio, intersecao)
 
@@ -212,6 +216,10 @@ def obtem_vale(territorio, intersecao):
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_vale: argumentos invalidos")
 
+    # Check if intersecao is part of territorio
+    if not eh_intersecao_valida(territorio, intersecao):
+        raise ValueError("obtem_vale: argumentos invalidos")
+
     # Check if intersecao is mountain
     if eh_intersecao_livre(territorio, intersecao):
         raise ValueError("obtem_vale: argumentos invalidos")
@@ -239,7 +247,15 @@ def verifica_conexao(territorio, intersecao1, intersecao2):
     if not eh_intersecao(intersecao1) or not eh_intersecao(intersecao2):
         raise ValueError("verifica_conexao: argumentos invalidos")
 
-    return obtem_cadeia(territorio, intersecao1) == obtem_cadeia(territorio, intersecao2)
+    # Check if intersecao is part of territorio
+    if not eh_intersecao_valida(territorio, intersecao1) or not eh_intersecao_valida(
+        territorio, intersecao2
+    ):
+        raise ValueError("verifica_conexao: argumentos invalidos")
+
+    return obtem_cadeia(territorio, intersecao1) == obtem_cadeia(
+        territorio, intersecao2
+    )
 
 
 # Return the number of occupied interceptions
@@ -256,4 +272,3 @@ def calcula_numero_montanhas(territorio):
                 count += 1
 
     return count
-
