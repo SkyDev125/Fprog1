@@ -241,3 +241,19 @@ def verifica_conexao(territorio, intersecao1, intersecao2):
 
     return obtem_cadeia(territorio, intersecao1) == obtem_cadeia(territorio, intersecao2)
 
+
+# Return the number of occupied interceptions
+def calcula_numero_montanhas(territorio):
+    # Check if territorio is valid
+    if not eh_territorio(territorio):
+        raise ValueError("calcula_numero_montanhas: argumento invalido")
+
+    # Count the number of occupied interceptions
+    count = 0
+    for collumn in territorio:
+        for cell in collumn:
+            if cell == 1:
+                count += 1
+
+    return count
+
