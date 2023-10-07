@@ -229,3 +229,15 @@ def obtem_vale(territorio, intersecao):
     return ordena_intersecoes(valleys)
 
 
+# Verify if the interceptions are connected (mountain->mountain or free->free)
+def verifica_conexao(territorio, intersecao1, intersecao2):
+    # Check if territorio is valid
+    if not eh_territorio(territorio):
+        raise ValueError("verifica_conexao: argumentos invalidos")
+
+    # Check if intersecao1 and intersecao2 are valid
+    if not eh_intersecao(intersecao1) or not eh_intersecao(intersecao2):
+        raise ValueError("verifica_conexao: argumentos invalidos")
+
+    return obtem_cadeia(territorio, intersecao1) == obtem_cadeia(territorio, intersecao2)
+
