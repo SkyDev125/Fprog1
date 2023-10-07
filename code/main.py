@@ -1,14 +1,14 @@
 # Verify if the territory is valid
 def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
     """
-    Check if the given territory is valid.
+    Checks if the given territory is valid.
 
     Args:
     - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
     Each cell of the column can be either 0 or 1.
 
     Returns:
-    bool: True if the territory is valid, False otherwise.
+    - True if the territory is valid, False otherwise.
     """
     # Check if the territorio is a tuple
     if not isinstance(territorio, tuple):
@@ -51,7 +51,7 @@ def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
     Each cell of the column can be either 0 or 1.
 
     Returns:
-    - a tuple of two integers representing the coordinates of the last interception (top right) of the territory
+    - A tuple of a string and an integer representing the coordinates of the last interception (top right) of the territory
     """
     return (chr(64 + len(territorio)), len(territorio[0]))
 
@@ -59,13 +59,13 @@ def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
 # Verify if the interception is valid
 def eh_intersecao(intersecao: tuple[str, int]) -> bool:
     """
-    Verify if the given intersection is valid.
+    Verifies if the given intersection is valid.
 
     Parameters:
     - intersecao: A tuple containing a string and an integer, representing an intersection.
 
     Returns:
-    bool: True if the intersection is valid, False otherwise.
+    - True if the intersection is valid, False otherwise.
     """
     # Check if the intersecao is a tuple
     if not isinstance(intersecao, tuple):
@@ -102,15 +102,15 @@ def eh_intersecao_valida(
     territorio: tuple[tuple[int]], intersecao: tuple[str, int]
 ) -> bool:
     """
-    Verify if the given intersection is within the territory.
+    Verifies if the given intersection is within the territory.
 
     Args:
-        - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
     Each cell of the column can be either 0 or 1.
-        intersecao (tuple): A tuple representing the intersection to be verified.
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
 
     Returns:
-        bool: True if the intersection is within the territory, False otherwise.
+    - True if the intersection is within the territory, False otherwise.
     """
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     collumn, line = intersecao
@@ -128,6 +128,15 @@ def eh_intersecao_valida(
 
 # Return the interseption in usable values for coding (A -> 0) (1 -> 0)
 def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
+    """
+    Converts the intersection coordinates from a tuple of strings and integers to a tuple of usable integers.
+
+    Args:
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
+    """
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
 
@@ -136,6 +145,17 @@ def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
 def eh_intersecao_livre(
     territorio: tuple[tuple[int]], intersecao: tuple[str, int]
 ) -> bool:
+    """
+    Checks if the intersection is free in the given territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A boolean value indicating whether the intersection is free (True) or occupied (False).
+    """
     collumn, line = convert_intersecao(intersecao)
     return territorio[collumn][line] == 0
 
@@ -143,7 +163,18 @@ def eh_intersecao_livre(
 # Return the adjacent interceptions
 def obtem_intersecoes_adjacentes(
     territorio: tuple[tuple[int]], intersecao: tuple[str, int]
-) -> tuple:
+) -> tuple[tuple[str, int]]:
+    """
+    Returns the adjacent intersections of the given intersection in the territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A tuple containing the adjacent intersections of the given intersection in the territory, where each element is a tuple containing the column as a string and the line as an integer.
+    """
     collumn, line = convert_intersecao(intersecao)
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     inter_adjs = ()
@@ -169,12 +200,38 @@ def obtem_intersecoes_adjacentes(
 
 # Order the Intersections by left to right, bottom to top
 def ordena_intersecoes(intersecoes: tuple[tuple[str, int]]) -> tuple[tuple[str, int]]:
+    """
+    Sorts the intersections by their position from left to right and bottom to top.
+
+    Args:
+    - intersecoes: A tuple of tuples representing intersections, where each inner tuple contains a string representing the
+    intersection's collumn and an integer representing the intersection's line.
+
+    Returns:
+    - A tuple of tuples representing intersections sorted by their position from left to right and bottom to top.
+    """
     # sort based on the number(line), then based on the letter(collumn)
     return tuple(sorted(intersecoes, key=lambda x: (x[1], x[0])))
 
 
 # Return the territory as a string
 def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
+    """
+    Returns a string representation of a territory, where each intersection is represented by an X or a . depending on
+    whether it is occupied or not, respectively. The territory is formatted as a grid with letters representing columns
+    and numbers representing rows.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - A string representation of the territory, formatted as a grid with letters representing columns and numbers
+    representing rows.
+
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
     # Check if territory is valid
     if not eh_territorio(territorio):
         raise ValueError("territorio_para_str: argumento invalido")
@@ -211,6 +268,20 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
 def obtem_cadeia(
     territorio: tuple[tuple[int]], intersecao: tuple[str, int]
 ) -> tuple[tuple[str, int]]:
+    """
+    Returns a sequence of adjacent intersections that have the same value in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A tuple of tuples representing a sequence of adjacent intersections that have the same value in the territory.
+    
+    Raises:
+    - ValueError: If the given territory or intersection are invalid.
+    """
     # Check if territorio and intersection are valid
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_cadeia: argumentos invalidos")
@@ -252,6 +323,20 @@ def obtem_cadeia(
 def obtem_vale(
     territorio: tuple[tuple[int]], intersecao: tuple[str, int]
 ) -> tuple[tuple[str, int]]:
+    """
+    Returns the valleys around a mountain in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A tuple of tuples representing valleys around the given mountain in the territory, sorted by their
+    position from left to right and bottom to top.
+    Raises:
+    - ValueError: If the given territory or intersection are invalid, or if the given intersection is not a mountain.
+    """
     # Check if territorio and intercesao are valid
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
         raise ValueError("obtem_vale: argumentos invalidos")
@@ -283,6 +368,23 @@ def verifica_conexao(
     intersecao1: tuple[str, int],
     intersecao2: tuple[str, int],
 ) -> bool:
+    """
+    Returns a boolean indicating whether two intersections in a territory are connected, where a connection exists if there
+    is a chain of adjacent intersections between them that are either both free or both occupied.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+    - intersecao1: A tuple containing a string and an integer, representing an intersection.
+    - intersecao2: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A boolean indicating whether the two intersections are connected.
+
+    Raises:
+    - ValueError: If the given territory or intersections are invalid, or if the given intersections are not part of the
+    territory.
+    """
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("verifica_conexao: argumentos invalidos")
@@ -304,6 +406,20 @@ def verifica_conexao(
 
 # Return a tuple of interceptions that are occupied
 def get_occupied_intercesao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
+    """
+    Returns the occupied intersections in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - A tuple of tuples representing occupied intersections in the territory, sorted by their position from left to right
+    and bottom to top.
+        
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
     # Create a list of interceptions
     occupied = ()
 
@@ -322,6 +438,19 @@ def get_occupied_intercesao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, i
 
 # Return the number of occupied interceptions
 def calcula_numero_montanhas(territorio: tuple[tuple[int]]) -> int:
+    """
+    Returns the number of mountains in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - An integer representing the number mountains in a territory.
+    
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_numero_montanhas: argumento invalido")
@@ -337,7 +466,20 @@ def calcula_numero_montanhas(territorio: tuple[tuple[int]]) -> int:
 
 
 # Return the number of mountain chains
-def calcula_numero_cadeias_montanhas(territori: tuple[tuple[int]]) -> int:
+def calcula_numero_cadeias_montanhas(territorio: tuple[tuple[int]]) -> int:
+    """
+    Returns the number of connected mountains in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - An integer representing the number of connected mountains in a territory.
+
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_numero_cadeias_montanhas: argumento invalido")
@@ -357,6 +499,19 @@ def calcula_numero_cadeias_montanhas(territori: tuple[tuple[int]]) -> int:
 
 # Return the number of valeys
 def calcula_tamanho_vales(territorio: tuple[tuple[int]]) -> int:
+    """
+    Returns the number of valleys in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - An integer representing the number of valleys in a territory.
+
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
     # Check if territorio is valid
     if not eh_territorio(territorio):
         raise ValueError("calcula_tamanho_vales: argumento invalido")
