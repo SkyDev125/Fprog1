@@ -156,10 +156,8 @@ def territorio_para_str(territorio):
     # Create a Letters line
     s += ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)]
 
-    # Join the strings
-    s = "".join(s)
-
-    return s
+    # Join the string
+    return "".join(s)
 
 
 # Return the chain of interceptions
