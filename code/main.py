@@ -84,7 +84,7 @@ def eh_intersecao_valida(territorio, intersecao):
     return True
 
 
-# Return the interseption in usable values for coding (1 -> 0) (A -> 0)
+# Return the interseption in usable values for coding (A -> 0) (1 -> 0)
 def convert_intersecao(intersecao):
     collumn, line = intersecao
     return (ord(collumn) - 64 - 1, line - 1)
@@ -135,36 +135,26 @@ def territorio_para_str(territorio):
 
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
 
+    max_collumns = ord(max_collumns) - 64
     # Create a Letters line
-    s = (
-        ["  "]
-        + [" " + chr(64 + x) for x in range(1, ord(max_collumns) - 64 + 1)]
-        + ["\n"]
-    )
+    s = ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)] + ["\n"]
 
     # Create the lines (number, values, number)
     for x in range(max_lines, 0, -1):
+        # Create the values
+        string_terrain = [
+            " " + ("X" if territorio[y][x - 1] == 1 else ".")
+            for y in range(max_collumns)
+        ]
+
+        # Add the lines to the string dynamically
         if x > 9:
-            s += (
-                [str(x)]
-                + [
-                    " " + ("X" if territorio[y][x - 1] == 1 else ".")
-                    for y in range(ord(max_collumns) - 64)
-                ]
-                + [" " + str(x) + "\n"]
-            )
+            s += [str(x)] + string_terrain + [" " + str(x) + "\n"]
         else:
-            s += (
-                [" " + str(x)]
-                + [
-                    " " + ("X" if territorio[y][x - 1] == 1 else ".")
-                    for y in range(ord(max_collumns) - 64)
-                ]
-                + ["  " + str(x) + "\n"]
-            )
+            s += [" " + str(x)] + string_terrain + ["  " + str(x) + "\n"]
 
     # Create a Letters line
-    s += ["  "] + [" " + chr(64 + x) for x in range(1, ord(max_collumns) - 64 + 1)]
+    s += ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)]
 
     # Join the strings
     s = "".join(s)
@@ -272,3 +262,39 @@ def calcula_numero_montanhas(territorio):
                 count += 1
 
     return count
+
+
+# Return the number of mountain chains
+def calcula_numero_cadeias_montanhas(territorio):
+    # Check if territorio is valid
+    if not eh_territorio(territorio):
+        raise ValueError("calcula_numero_cadeias_montanhas: argumento invalido")
+
+    # Check all the interceptions
+    count = 0
+    visited = ()
+    for collumn in range(len(territorio)):
+        for cell in range(len(territorio[collumn])):
+            # Convert to intercesao (0 -> A) (0 -> 1)
+            intercesao = (chr(65 + collumn), 1 + cell)
+
+            # Check if the intercesao is free
+            if eh_intersecao_livre(territorio, intercesao):
+                visited += obtem_cadeia(territorio, intercesao)
+                continue
+
+            # Check if the intercesao is has been checked already
+            if intercesao not in visited:
+                visited += obtem_cadeia(territorio, intercesao)
+                count += 1
+
+    return count
+
+
+# Return the number of valeys
+def calcula_tamanho_vales(territorio):
+    pass
+
+
+t = ((1, 1, 1, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 0), (0, 0, 0, 0))
+print(calcula_numero_cadeias_montanhas(t))
