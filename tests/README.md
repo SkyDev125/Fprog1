@@ -4,7 +4,7 @@ Para correr os testes públicos utilizando o módulo `pytest` de `Python`, deve 
 
 ```bash
 pytest -vv test_public.py 
-python -m pytest 
+python -m pytest -vv
 ```
 
 Para o seu funciomento correto, para além de ter instalado o `Python` e o `pytest`, o ficheiro `test_public.py` e o ficheiro com a solução do projeto devem encontrar-se na mesma pasta onde executamos o anterior comando. Também será preciso editar o ficheiro `test_public.py` para mudar o nome do módulo que contém a solução do projeto, ou alternativamente,  dar o nome `projectoFP.py` ao script com a solução do projecto.

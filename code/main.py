@@ -174,12 +174,8 @@ def territorio_para_str(territorio):
 
 # Return the chain of interceptions
 def obtem_cadeia(territorio, intersecao):
-    # Check if territorio is valid
+    # Check if territorio and intersection are valid
     if not eh_territorio(territorio) or not eh_intersecao(intersecao):
-        raise ValueError("obtem_cadeia: argumentos invalidos")
-
-    # Check if intersecao is valid (TODO: Check with teacher)
-    if not eh_intersecao_valida(territorio, intersecao):
         raise ValueError("obtem_cadeia: argumentos invalidos")
 
     # Check if intersecao is free
@@ -188,8 +184,8 @@ def obtem_cadeia(territorio, intersecao):
     # Create recursive function to check if the adjacent interceptions are also free
     def recursive_check(territorio, intersecao, visited=()):
         # Add the intersecao to the list
-        tups = (intersecao,)
-        visited += tups
+        chain = (intersecao,)
+        visited += chain
 
         # Check if the adjacent interceptions are equal to the freedom
         for inter in obtem_intersecoes_adjacentes(territorio, intersecao):
@@ -197,14 +193,39 @@ def obtem_cadeia(territorio, intersecao):
                 eh_intersecao_livre(territorio, inter) == freedom
                 and inter not in visited
             ):
-                tups += recursive_check(territorio, inter, visited)
+                chain += recursive_check(territorio, inter, visited)
 
-        return tups
+        return chain
 
     # Get the list of interceptions
-    tups = recursive_check(territorio, intersecao)
+    chain = recursive_check(territorio, intersecao)
 
     # Clean duplicates
-    tups = tuple(set(tups))
+    chain = tuple(set(chain))
 
-    return ordena_intersecoes(tups)
+    return ordena_intersecoes(chain)
+
+
+# Return the valleys around a mountain
+def obtem_vale(territorio, intersecao):
+    # Check if territorio and intercesao are valid
+    if not eh_territorio(territorio) or not eh_intersecao(intersecao):
+        raise ValueError("obtem_vale: argumentos invalidos")
+
+    # Check if intersecao is mountain
+    if eh_intersecao_livre(territorio, intersecao):
+        raise ValueError("obtem_vale: argumentos invalidos")
+
+    valleys = ()
+
+    # Get the chain of interceptions
+    for inter in obtem_cadeia(territorio, intersecao):
+        # Get the adjacent interceptions
+        for adj in obtem_intersecoes_adjacentes(territorio, inter):
+            # Check if the adjacent interceptions are free
+            if eh_intersecao_livre(territorio, adj) and adj not in valleys:
+                valleys += (adj,)
+
+    return ordena_intersecoes(valleys)
+
+
