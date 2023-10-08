@@ -313,9 +313,6 @@ def obtem_cadeia(
     # Get the list of interceptions
     chain = recursive_check(territorio, intersecao, visited)
 
-    # Clean duplicates
-    chain = tuple(chain)
-
     return ordena_intersecoes(chain)
 
 
@@ -405,7 +402,7 @@ def verifica_conexao(
 
 
 # Return a tuple of interceptions that are occupied
-def get_occupied_intercesao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
+def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
     """
     Returns the occupied intersections in a territory.
 
@@ -485,7 +482,7 @@ def calcula_numero_cadeias_montanhas(territorio: tuple[tuple[int]]) -> int:
         raise ValueError("calcula_numero_cadeias_montanhas: argumento invalido")
 
     # Get the occupied interceptions
-    occupied = get_occupied_intercesao(territorio)
+    occupied = get_occupied_intersecao(territorio)
     visited = ()
     count = 0
     for occupied_intercesao in occupied:
@@ -517,7 +514,7 @@ def calcula_tamanho_vales(territorio: tuple[tuple[int]]) -> int:
         raise ValueError("calcula_tamanho_vales: argumento invalido")
 
     # Get the occupied interceptions
-    occupied = get_occupied_intercesao(territorio)
+    occupied = get_occupied_intersecao(territorio)
     visited = ()
     valeys = ()
     # Get the valeys
