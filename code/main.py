@@ -291,7 +291,7 @@ def obtem_cadeia(
         raise ValueError("obtem_cadeia: argumentos invalidos")
 
     # Check if intersecao is free
-    freedom = eh_intersecao_livre(territorio, intersecao)
+    isfree = eh_intersecao_livre(territorio, intersecao)
     visited = []
 
     # Create recursive function to check if the adjacent interceptions are also the same as freedom
@@ -304,7 +304,7 @@ def obtem_cadeia(
         for inter in obtem_intersecoes_adjacentes(territorio, intersecao):
             if (
                 inter not in visited
-                and eh_intersecao_livre(territorio, inter) == freedom
+                and eh_intersecao_livre(territorio, inter) == isfree
             ):
                 chain += recursive_check(territorio, inter, visited)
 
