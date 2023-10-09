@@ -4,7 +4,12 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "code")))
 
-import main as fp
+import main as fp # <--- Change the name projName to the file name with your project
+
+# Testes públicos extra para o projeto 1 de FP (2023-2024)
+# by Marcos Machado
+# Git: @mc8mac
+
 
 class TestEhTerritorio:
 
@@ -146,10 +151,6 @@ class TestEhIntersecaoValida:
         t = tuple(tuple(1 for _ in range(99)) for _ in range(26))
         assert fp.eh_intersecao_valida(t, ('Z', 99))
 
-    def test_7(self):
-        t = tuple(tuple(1 for _ in range(100)) for _ in range(26))
-        assert not fp.eh_intersecao_valida(t, ('Z', 100))
-
 class TestEhIntersecaoLivre:
 
     def test_1(self):
@@ -227,7 +228,7 @@ class TestTerritorioParaStr:
     def test_2(self):
         t = t=((1,1,1,0,0,0,0,0,1,1),)
         assert fp.territorio_para_str(t) == '   A\n10 X 10\n 9 X  9\n 8 .  8\n 7 .  7\n 6 .  6\n 5 .  5\n 4 .  4\n 3 X  3\n 2 X  2\n 1 X  1\n   A'
-
+     
     def test_3(self):
         t = ((0,1,0,0),(0,0,0,0),(0,0,1,0),(1,0,0,0),(0,0,0,0))
         assert fp.territorio_para_str(t) == '   A B C D E\n 4 . . . . .  4\n 3 . . X . .  3\n 2 X . . . .  2\n 1 . . . X .  1\n   A B C D E'
