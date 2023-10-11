@@ -35,6 +35,11 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
 
         # Check if the collumn has only 0 or 1
         for cell in collumn:
+
+            # Check if cell is int
+            if not isinstance(cell, int):   
+                return False
+
             if cell not in (0, 1):
                 return False
 
@@ -278,7 +283,7 @@ def obtem_cadeia(
 
     Returns:
     - A tuple of tuples representing a sequence of adjacent intersections that have the same value in the territory.
-    
+
     Raises:
     - ValueError: If the given territory or intersection are invalid.
     """
@@ -413,7 +418,7 @@ def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, i
     Returns:
     - A tuple of tuples representing occupied intersections in the territory, sorted by their position from left to right
     and bottom to top.
-        
+
     Raises:
     - ValueError: If the given territory is invalid.
     """
@@ -444,7 +449,7 @@ def calcula_numero_montanhas(territorio: tuple[tuple[int]]) -> int:
 
     Returns:
     - An integer representing the number mountains in a territory.
-    
+
     Raises:
     - ValueError: If the given territory is invalid.
     """
