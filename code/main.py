@@ -1,3 +1,16 @@
+""" 
+Author: 
+- Diogo Santos (ist1110262)
+
+Date:
+- 12/10/2023 (Onze de Outubro de 2023)
+
+Description: 
+- This file contains the functions that are used on the FProg project1 (Analyzing territory datastructure).
+
+"""
+
+
 # Verify if the territory is valid
 def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
     """
@@ -35,9 +48,8 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
 
         # Check if the collumn has only 0 or 1
         for cell in collumn:
-
             # Check if cell is int
-            if not isinstance(cell, int):   
+            if not isinstance(cell, int):
                 return False
 
             if cell not in (0, 1):
@@ -129,21 +141,6 @@ def eh_intersecao_valida(
         return False
 
     return True
-
-
-# Return the interseption in usable values for coding (A -> 0) (1 -> 0)
-def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
-    """
-    Converts the intersection coordinates from a tuple of strings and integers to a tuple of usable integers.
-
-    Args:
-    - intersecao: A tuple containing a string and an integer, representing an intersection.
-
-    Returns:
-    - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
-    """
-    collumn, line = intersecao
-    return (ord(collumn) - 64 - 1, line - 1)
 
 
 # Verify if the interception is free
@@ -296,7 +293,7 @@ def obtem_cadeia(
         raise ValueError("obtem_cadeia: argumentos invalidos")
 
     # Check if intersecao is free
-    isfree = eh_intersecao_livre(territorio, intersecao)
+    is_free = eh_intersecao_livre(territorio, intersecao)
     visited = []
 
     # Create recursive function to check if the adjacent interceptions are also the same as freedom
@@ -309,7 +306,7 @@ def obtem_cadeia(
         for inter in obtem_intersecoes_adjacentes(territorio, intersecao):
             if (
                 inter not in visited
-                and eh_intersecao_livre(territorio, inter) == isfree
+                and eh_intersecao_livre(territorio, inter) == is_free
             ):
                 chain += recursive_check(territorio, inter, visited)
 
@@ -406,38 +403,6 @@ def verifica_conexao(
     )
 
 
-# Return a tuple of interceptions that are occupied
-def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
-    """
-    Returns the occupied intersections in a territory.
-
-    Args:
-    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
-    Each cell of the column can be either 0 or 1.
-
-    Returns:
-    - A tuple of tuples representing occupied intersections in the territory, sorted by their position from left to right
-    and bottom to top.
-
-    Raises:
-    - ValueError: If the given territory is invalid.
-    """
-    # Create a list of interceptions
-    occupied = ()
-
-    # Check all the interceptions
-    for collumn in range(len(territorio)):
-        for cell in range(len(territorio[collumn])):
-            # Convert to intercesao (0 -> A) (0 -> 1)
-            intercesao = (chr(65 + collumn), 1 + cell)
-
-            # Check if the intercesao is free
-            if not eh_intersecao_livre(territorio, intercesao):
-                occupied += (intercesao,)
-
-    return ordena_intersecoes(occupied)
-
-
 # Return the number of occupied interceptions
 def calcula_numero_montanhas(territorio: tuple[tuple[int]]) -> int:
     """
@@ -531,3 +496,56 @@ def calcula_tamanho_vales(territorio: tuple[tuple[int]]) -> int:
 
     # Clean duplicates
     return len(set(valeys))
+
+
+"""
+Auxiliary Functions
+
+"""
+
+
+# Return a tuple of interceptions that are occupied
+def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, int]]:
+    """
+    Returns the occupied intersections in a territory.
+
+    Args:
+    - territorio: a tuple representing the territory, where each element is a tuple representing a column of the territory.
+    Each cell of the column can be either 0 or 1.
+
+    Returns:
+    - A tuple of tuples representing occupied intersections in the territory, sorted by their position from left to right
+    and bottom to top.
+
+    Raises:
+    - ValueError: If the given territory is invalid.
+    """
+    # Create a list of interceptions
+    occupied = ()
+
+    # Check all the interceptions
+    for collumn in range(len(territorio)):
+        for cell in range(len(territorio[collumn])):
+            # Convert to intercesao (0 -> A) (0 -> 1)
+            intercesao = (chr(65 + collumn), 1 + cell)
+
+            # Check if the intercesao is free
+            if not eh_intersecao_livre(territorio, intercesao):
+                occupied += (intercesao,)
+
+    return ordena_intersecoes(occupied)
+
+
+# Return the interseption in usable values for coding (A -> 0) (1 -> 0)
+def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
+    """
+    Converts the intersection coordinates from a tuple of strings and integers to a tuple of usable integers.
+
+    Args:
+    - intersecao: A tuple containing a string and an integer, representing an intersection.
+
+    Returns:
+    - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
+    """
+    collumn, line = intersecao
+    return (ord(collumn) - 64 - 1, line - 1)
