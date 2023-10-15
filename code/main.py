@@ -49,7 +49,7 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
         # Check if the collumn has only 0 or 1
         for cell in collumn:
             # Check if cell is int
-            if not isinstance(cell, int):
+            if type(cell) != int:
                 return False
 
             if cell not in (0, 1):
@@ -100,7 +100,7 @@ def eh_intersecao(intersecao: tuple[str, int]) -> bool:
         return False
 
     # Check if the second element is a int
-    if not isinstance(intersecao[1], int):
+    if type(intersecao[1]) != int:
         return False
 
     # Check if the first element is a valid string
