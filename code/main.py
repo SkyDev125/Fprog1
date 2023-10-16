@@ -3,10 +3,10 @@ Author:
 - Diogo Santos (ist1110262)
 
 Date:
-- 12/10/2023 (Onze de Outubro de 2023)
+- 12/10/2023 (Doze de Outubro de 2023)
 
 Description: 
-- This file contains the functions that are used on the FProg project1 (Analyzing territory datastructure).
+- This file contains the functions that are used on the FProg project1.
 
 """
 
@@ -31,7 +31,7 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
     if len(territorio) < 1 or len(territorio) > 26:
         return False
 
-    firstCollumn = territorio[0]
+    first_collumn = territorio[0]
     # Check if the collumns have the same lenght
     for collumn in territorio:
         # Check if the arg is a tuple
@@ -43,7 +43,7 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
             return False
 
         # Check if the collumn has the same lenght as the first collumn
-        if len(collumn) != len(firstCollumn):
+        if len(collumn) != len(first_collumn):
             return False
 
         # Check if the collumn has only 0 or 1
@@ -52,7 +52,7 @@ def eh_territorio(territorio: tuple[tuple[int]]) -> bool:
             if type(cell) != int:
                 return False
 
-            if cell not in (0, 1):
+            if cell not in {0, 1}:
                 return False
 
     return True
@@ -70,7 +70,7 @@ def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
     Returns:
     - A tuple of a string and an integer representing the coordinates of the last interception (top right) of the territory
     """
-    return (chr(64 + len(territorio)), len(territorio[0]))
+    return (chr(ord('A') - 1 + len(territorio)), len(territorio[0]))
 
 
 # Verify if the interception is valid
@@ -93,7 +93,7 @@ def eh_intersecao(intersecao: tuple[str, int]) -> bool:
         return False
 
     # Create a set with all the valid strings
-    valid_strings = {chr(65 + i) for i in range(26)}
+    valid_strings = {chr(ord('A') + i) for i in range(26)}
 
     # Check if the first element is a string
     if not isinstance(intersecao[0], str):
@@ -181,21 +181,21 @@ def obtem_intersecoes_adjacentes(
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
     inter_adjs = ()
 
-    # Add the top adjacent interception
+    # Add the bottom adjacent interception
     if line > 0:
-        inter_adjs += ((chr(collumn + 64 + 1), line),)
+        inter_adjs += ((chr(collumn + ord('A') - 1 + 1), line),)
 
     # Add the left adjacent interception
     if collumn > 0:
-        inter_adjs += ((chr(collumn + 64), line + 1),)
+        inter_adjs += ((chr(collumn + ord('A') - 1), line + 1),)
 
     # Add the right adjacent interception
-    if collumn + 2 <= ord(max_collumns) - 64:
-        inter_adjs += ((chr(collumn + 64 + 2), line + 1),)
+    if collumn + 2 <= ord(max_collumns) - ord('A') - 1:
+        inter_adjs += ((chr(collumn + ord('A') - 1 + 2), line + 1),)
 
-    # Add the bottom adjacent interception
+    # Add the top adjacent interception
     if line + 2 <= max_lines:
-        inter_adjs += ((chr(collumn + 64 + 1), line + 2),)
+        inter_adjs += ((chr(collumn + ord('A') - 1 + 1), line + 2),)
 
     return inter_adjs
 
@@ -240,10 +240,10 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
 
     # Get the maximum collumns and lines
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
-    max_collumns = ord(max_collumns) - 64
+    max_collumns = ord(max_collumns) - ord('A') - 1
 
     # Add a Letters line
-    s = ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)] + ["\n"]
+    s = ["  "] + [" " + chr(ord('A') - 1 + x) for x in range(1, max_collumns + 1)] + ["\n"]
 
     # Create the lines (number, values, number)
     for x in range(max_lines, 0, -1):
@@ -260,7 +260,7 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
             s += [" " + str(x)] + string_terrain + ["  " + str(x) + "\n"]
 
     # Add a Letters line
-    s += ["  "] + [" " + chr(64 + x) for x in range(1, max_collumns + 1)]
+    s += ["  "] + [" " + chr(ord('A') - 1 + x) for x in range(1, max_collumns + 1)]
 
     # Join the string
     return "".join(s)
@@ -527,7 +527,7 @@ def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, i
     for collumn in range(len(territorio)):
         for cell in range(len(territorio[collumn])):
             # Convert to intercesao (0 -> A) (0 -> 1)
-            intercesao = (chr(65 + collumn), 1 + cell)
+            intercesao = (chr(ord('A') + collumn), 1 + cell)
 
             # Check if the intercesao is free
             if not eh_intersecao_livre(territorio, intercesao):
@@ -548,4 +548,4 @@ def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
     - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
     """
     collumn, line = intersecao
-    return (ord(collumn) - 64 - 1, line - 1)
+    return (ord(collumn) - ord('A') - 1 - 1, line - 1)
