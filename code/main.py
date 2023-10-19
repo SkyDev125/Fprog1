@@ -68,7 +68,7 @@ def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
     Each cell of the column can be either 0 or 1.
 
     Returns:
-    - A tuple of a string and an integer representing the coordinates of the last interception (top right) of the territory
+    - A tuple of a string and an integer representing the coordinates of the last interception (top right) of the territory.
     """
     return (chr((ord('A') - 1) + len(territorio)), len(territorio[0]))
 
@@ -172,7 +172,8 @@ def obtem_intersecoes_adjacentes(
     - intersecao: A tuple containing a string and an integer, representing an intersection.
 
     Returns:
-    - A tuple containing the adjacent intersections of the given intersection in the territory, where each element is a tuple containing the column as a string and the line as an integer.
+    - A tuple containing the adjacent intersections of the given intersection in the territory, 
+    where each element is a tuple containing the column as a string and the line as an integer.
     """
     collumn, line = convert_intersecao(intersecao)
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
