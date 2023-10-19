@@ -70,7 +70,7 @@ def obtem_ultima_intersecao(territorio: tuple[tuple[int]]) -> tuple[str, int]:
     Returns:
     - A tuple of a string and an integer representing the coordinates of the last interception (top right) of the territory
     """
-    return (chr(ord('A') - 1 + len(territorio)), len(territorio[0]))
+    return (chr((ord('A') - 1) + len(territorio)), len(territorio[0]))
 
 
 # Verify if the interception is valid
@@ -137,10 +137,7 @@ def eh_intersecao_valida(
         return False
 
     # Check if the line is larger than the maximum allowed for lines
-    if line > max_lines:
-        return False
-
-    return True
+    return line <= max_lines
 
 
 # Verify if the interception is free
@@ -183,19 +180,19 @@ def obtem_intersecoes_adjacentes(
 
     # Add the bottom adjacent interception
     if line > 0:
-        inter_adjs += ((chr(collumn + ord('A') - 1 + 1), line),)
+        inter_adjs += ((chr(collumn + (ord('A') - 1) + 1), line),)
 
     # Add the left adjacent interception
     if collumn > 0:
-        inter_adjs += ((chr(collumn + ord('A') - 1), line + 1),)
+        inter_adjs += ((chr(collumn + (ord('A') - 1)), line + 1),)
 
     # Add the right adjacent interception
-    if collumn + 2 <= ord(max_collumns) - ord('A') - 1:
-        inter_adjs += ((chr(collumn + ord('A') - 1 + 2), line + 1),)
+    if collumn + 2 <= ord(max_collumns) - (ord('A') - 1):
+        inter_adjs += ((chr(collumn + (ord('A') - 1) + 2), line + 1),)
 
     # Add the top adjacent interception
     if line + 2 <= max_lines:
-        inter_adjs += ((chr(collumn + ord('A') - 1 + 1), line + 2),)
+        inter_adjs += ((chr(collumn + (ord('A') - 1) + 1), line + 2),)
 
     return inter_adjs
 
@@ -240,10 +237,10 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
 
     # Get the maximum collumns and lines
     max_collumns, max_lines = obtem_ultima_intersecao(territorio)
-    max_collumns = ord(max_collumns) - ord('A') - 1
+    max_collumns = ord(max_collumns) - (ord('A') - 1)
 
     # Add a Letters line
-    s = ["  "] + [" " + chr(ord('A') - 1 + x) for x in range(1, max_collumns + 1)] + ["\n"]
+    s = ["  "] + [" " + chr((ord('A') - 1) + x) for x in range(1, max_collumns + 1)] + ["\n"]
 
     # Create the lines (number, values, number)
     for x in range(max_lines, 0, -1):
@@ -260,7 +257,7 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
             s += [" " + str(x)] + string_terrain + ["  " + str(x) + "\n"]
 
     # Add a Letters line
-    s += ["  "] + [" " + chr(ord('A') - 1 + x) for x in range(1, max_collumns + 1)]
+    s += ["  "] + [" " + chr((ord('A') - 1) + x) for x in range(1, max_collumns + 1)]
 
     # Join the string
     return "".join(s)
@@ -548,4 +545,4 @@ def convert_intersecao(intersecao: tuple[str, int]) -> tuple[int, int]:
     - A tuple containing the column number as an integer (starting from 0) and the line number as an integer (starting from 0).
     """
     collumn, line = intersecao
-    return (ord(collumn) - ord('A') - 1 - 1, line - 1)
+    return (ord(collumn) - (ord('A') - 1) - 1, line - 1)
