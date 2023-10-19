@@ -227,7 +227,7 @@ def territorio_para_str(territorio: tuple[tuple[int]]) -> str:
     representing rows.
 
     Raises:
-    - ValueError: If the given territory is invalid.
+    - ValueError: If the given territory is invalid.t
     """
     # Check if territory is valid
     if not eh_territorio(territorio):
