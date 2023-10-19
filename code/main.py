@@ -108,10 +108,7 @@ def eh_intersecao(intersecao: tuple[str, int]) -> bool:
         return False
 
     # Check if the second element is a valid int
-    if intersecao[1] < 1 or intersecao[1] > 99:
-        return False
-
-    return True
+    return 1 <= intersecao[1] <= 99
 
 
 # Verify if the interception is in the territory
