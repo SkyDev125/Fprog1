@@ -516,7 +516,7 @@ def get_occupied_intersecao(territorio: tuple[tuple[int]]) -> tuple[tuple[str, i
     - ValueError: If the given territory is invalid.
     """
     # Create a list of interceptions
-    occupied = ()
+    occupied = ()   
 
     # Check all the interceptions
     for collumn in range(len(territorio)):
